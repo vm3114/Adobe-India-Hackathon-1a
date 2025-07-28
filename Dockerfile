@@ -1,10 +1,8 @@
-FROM ghcr.io/nlmatics/nlm-ingestor:latest
-
+FROM python:3.11-slim
 WORKDIR /app
-
-RUN pip install --no-cache-dir llmsherpa==0.1.4
-
+RUN apt-get update && apt-get install -y \
+    && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 COPY extract_headings.py .
-COPY entrypoint.sh .
-RUN chmod +x entrypoint.sh
-ENTRYPOINT ["./entrypoint.sh"]
+CMD ["python", "extract_headings.py"]
